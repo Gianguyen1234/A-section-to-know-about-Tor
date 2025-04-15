@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Tor Browser - The Anonymous Network</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .onion-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw 3s ease-in-out forwards;
+        }
+
+        @keyframes draw {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .btn-primary {
+            background-color: #7c3aed;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #5b21b6;
+        }
+
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #1f2937;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted #7c3aed;
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <div class="inline-block p-3 bg-purple-100 rounded-full mb-4">
+                <i class="fas fa-mask text-purple-600 text-3xl"></i>
+            </div>
+            <!-- Vietnamese Button -->
+            <div class="text-right mb-4">
+                <a href="index.html"
+                    class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+                    <i class="fas fa-language mr-2"></i>Vietnamese Version
+                </a>
+            </div>
+            <h1 class="text-4xl font-bold mb-3 text-gray-900">Understanding Tor Browser</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                A friendly guide to how the anonymous Tor browser works
+            </p>
+            <p class="text-md text-gray-700 mt-4">Created by <strong>Holy_Dev</strong></p>
+            <div class="flex justify-center items-center gap-4 mt-2">
+                <a href="https://github.com/Gianguyen1234" target="_blank" class="text-purple-600 hover:underline">
+                    <i class="fab fa-github text-2xl"></i>
+                </a>
+                <a href="https://www.youtube.com/@dev-maniac2349" target="_blank" class="text-red-600 hover:underline">
+                    <i class="fab fa-youtube text-2xl"></i>
+                </a>
+            </div>
+        </header>
+
+        <!-- Introduction -->
+        <div class="card bg-white rounded-xl shadow-sm p-6 mb-8">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+                    <i class="fas fa-info-circle text-purple-600"></i>
+                </div>
+                <h2 class="text-2xl font-semibold text-gray-900">Introduction to Tor</h2>
+            </div>
+
+            <div class="space-y-4 text-gray-700">
+                <p>Tor (The Onion Router) is a distributed network of computers that helps protect privacy and anonymity
+                    when accessing the Internet. Tor Browser is a web browser specially designed to connect to the Tor
+                    network.</p>
+
+                <p>Tor works by routing your internet traffic through a network of volunteer servers (called relays)
+                    around the world, hiding your location and activities from surveillance.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                    <div class="p-4 bg-purple-50 rounded-lg border border-purple-100">
+                        <div class="flex items-center mb-2">
+                            <div class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center mr-2">
+                                <i class="fas fa-user-secret text-purple-600 text-xs"></i>
+                            </div>
+                            <h3 class="font-semibold">Anonymity</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Hides your real identity and location when browsing</p>
+                    </div>
+                    <div class="p-4 bg-purple-50 rounded-lg border border-purple-100">
+                        <div class="flex items-center mb-2">
+                            <div class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center mr-2">
+                                <i class="fas fa-layer-group text-purple-600 text-xs"></i>
+                            </div>
+                            <h3 class="font-semibold">Onion Routing</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Multi-layer encryption like an onion to protect data</p>
+                    </div>
+                    <div class="p-4 bg-purple-50 rounded-lg border border-purple-100">
+                        <div class="flex items-center mb-2">
+                            <div class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center mr-2">
+                                <i class="fas fa-globe text-purple-600 text-xs"></i>
+                            </div>
+                            <h3 class="font-semibold">Open Access</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Bypasses internet censorship for free information access</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How Tor Works -->
+        <div class="card bg-white rounded-xl shadow-sm p-6 mb-8">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+                    <i class="fas fa-cogs text-purple-600"></i>
+                </div>
+                <h2 class="text-2xl font-semibold text-gray-900">How Tor Works</h2>
+            </div>
+
+            <div class="space-y-8">
+                <!-- Onion Routing -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 flex items-center">
+                        <span
+                            class="w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center mr-2 text-sm">1</span>
+                        Onion Routing
+                    </h3>
+                    <p class="mb-4 text-gray-700">Tor uses "onion routing" technique - data is encrypted in multiple
+                        layers and relayed through at least 3 random relays before reaching its destination.</p>
+
+                    <div class="bg-purple-50 p-4 rounded-lg border border-purple-100 mb-6">
+                        <svg viewBox="0 0 800 300" class="w-full">
+                            <!-- Client -->
+                            <circle cx="100" cy="150" r="40" fill="#8b5cf6" />
+                            <text x="100" y="150" text-anchor="middle" fill="white" font-weight="bold"
+                                dy=".3em">You</text>
+
+                            <!-- Relays -->
+                            <circle cx="250" cy="100" r="30" fill="#7c3aed" />
+                            <text x="250" y="100" text-anchor="middle" fill="white" font-weight="bold"
+                                dy=".3em">Guard</text>
+
+                            <circle cx="400" cy="150" r="30" fill="#6d28d9" />
+                            <text x="400" y="150" text-anchor="middle" fill="white" font-weight="bold"
+                                dy=".3em">Middle</text>
+
+                            <circle cx="550" cy="200" r="30" fill="#5b21b6" />
+                            <text x="550" y="200" text-anchor="middle" fill="white" font-weight="bold"
+                                dy=".3em">Exit</text>
+
+                            <!-- Destination -->
+                            <circle cx="700" cy="150" r="40" fill="#4c1d95" />
+                            <text x="700" y="150" text-anchor="middle" fill="white" font-weight="bold"
+                                dy=".3em">Website</text>
+
+                            <!-- Path -->
+                            <path class="onion-path" d="M100,150 L250,100 L400,150 L550,200 L700,150" stroke="#7c3aed"
+                                stroke-width="3" fill="none" />
+                        </svg>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-3 bg-white rounded-lg border border-gray-200">
+                            <h4 class="font-semibold mb-2 flex items-center">
+                                <i class="fas fa-shield-alt text-purple-600 mr-2"></i>
+                                Guard Relay
+                            </h4>
+                            <p class="text-sm text-gray-600">Entry point to Tor network, knows your real IP but not what
+                                you're accessing</p>
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-gray-200">
+                            <h4 class="font-semibold mb-2 flex items-center">
+                                <i class="fas fa-random text-purple-600 mr-2"></i>
+                                Middle Relay
+                            </h4>
+                            <p class="text-sm text-gray-600">Intermediate relay, knows neither the real IP nor the final
+                                destination</p>
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-gray-200">
+                            <h4 class="font-semibold mb-2 flex items-center">
+                                <i class="fas fa-door-open text-purple-600 mr-2"></i>
+                                Exit Relay
+                            </h4>
+                            <p class="text-sm text-gray-600">Exit point from Tor network, knows the destination but not
+                                your real IP</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Encryption -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3 flex items-center">
+                            <span
+                                class="w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center mr-2 text-sm">2</span>
+                            Multi-Layer Encryption
+                        </h3>
+                        <p class="mb-4 text-gray-700">Tor uses multi-layer encryption (like an onion) to protect data:
+                        </p>
+
+                        <div class="p-4 bg-purple-50 rounded-lg border border-purple-100 mb-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="text-center">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-1">
+                                        <i class="fas fa-lock text-purple-600"></i>
+                                    </div>
+                                    <span class="text-xs">Layer 1</span>
+                                </div>
+                                <i class="fas fa-arrow-right text-gray-400"></i>
+                                <div class="text-center">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-purple-200 flex items-center justify-center mx-auto mb-1">
+                                        <i class="fas fa-lock text-purple-600"></i>
+                                    </div>
+                                    <span class="text-xs">Layer 2</span>
+                                </div>
+                                <i class="fas fa-arrow-right text-gray-400"></i>
+                                <div class="text-center">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-purple-300 flex items-center justify-center mx-auto mb-1">
+                                        <i class="fas fa-lock text-purple-600"></i>
+                                    </div>
+                                    <span class="text-xs">Layer 3</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600">Each relay only decrypts one layer to know the next relay,
+                                cannot see the entire path</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3 flex items-center">
+                            <span
+                                class="w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center mr-2 text-sm">3</span>
+                            Tor Network
+                        </h3>
+                        <p class="mb-4 text-gray-700">The Tor network consists of thousands of volunteer relays
+                            worldwide:</p>
+
+                        <div class="p-4 bg-purple-50 rounded-lg border border-purple-100">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-server text-purple-600 mr-2"></i>
+                                <h4 class="font-semibold">Types of Relays</h4>
+                            </div>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-start">
+                                    <div
+                                        class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                        <i class="fas fa-shield-alt text-purple-600 text-xs"></i>
+                                    </div>
+                                    <span><span class="font-medium">Guard Relay:</span> Entry point to Tor network
+                                        (requires high trust)</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <div
+                                        class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                        <i class="fas fa-random text-purple-600 text-xs"></i>
+                                    </div>
+                                    <span><span class="font-medium">Middle Relay:</span> Forwards traffic (most
+                                        common)</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <div
+                                        class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                        <i class="fas fa-door-open text-purple-600 text-xs"></i>
+                                    </div>
+                                    <span><span class="font-medium">Exit Relay:</span> Exit point (requires accepting
+                                        legal risks)</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Circuit -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 flex items-center">
+                        <span
+                            class="w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center mr-2 text-sm">4</span>
+                        Tor Circuit
+                    </h3>
+                    <p class="mb-4 text-gray-700">Each browsing session creates a new circuit consisting of 3 random
+                        relays. This circuit changes after 10 minutes or when opening a new tab.</p>
+
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 mb-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="text-center">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-1">
+                                    <i class="fas fa-user text-purple-600"></i>
+                                </div>
+                                <span class="text-xs">You</span>
+                            </div>
+                            <i class="fas fa-arrow-right text-gray-400"></i>
+                            <div class="text-center">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-purple-200 flex items-center justify-center mx-auto mb-1">
+                                    <span class="text-purple-600 font-bold">A</span>
+                                </div>
+                                <span class="text-xs">Relay A</span>
+                            </div>
+                            <i class="fas fa-arrow-right text-gray-400"></i>
+                            <div class="text-center">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-purple-300 flex items-center justify-center mx-auto mb-1">
+                                    <span class="text-purple-600 font-bold">B</span>
+                                </div>
+                                <span class="text-xs">Relay B</span>
+                            </div>
+                            <i class="fas fa-arrow-right text-gray-400"></i>
+                            <div class="text-center">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-purple-400 flex items-center justify-center mx-auto mb-1">
+                                    <span class="text-purple-600 font-bold">C</span>
+                                </div>
+                                <span class="text-xs">Relay C</span>
+                            </div>
+                            <i class="fas fa-arrow-right text-gray-400"></i>
+                            <div class="text-center">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center mx-auto mb-1">
+                                    <i class="fas fa-globe text-white"></i>
+                                </div>
+                                <span class="text-xs">Website</span>
+                            </div>
+                        </div>
+                        <button onclick="changeCircuit()"
+                            class="btn-primary py-2 px-4 rounded-lg transition-colors w-full">
+                            <i class="fas fa-sync-alt mr-2"></i>Change Circuit
+                        </button>
+                        <div class="mt-2 text-sm text-center" id="circuitStatus">Current circuit: A → B → C</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tor Browser Features -->
+        <div class="card bg-white rounded-xl shadow-sm p-6 mb-8">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+                    <i class="fas fa-star text-purple-600"></i>
+                </div>
+                <h2 class="text-2xl font-semibold text-gray-900">Tor Browser Features</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 flex items-center">
+                        <i class="fas fa-shield-alt text-purple-600 mr-2"></i>
+                        Enhanced Security
+                    </h3>
+                    <ul class="space-y-3 text-gray-700">
+                        <li class="flex items-start">
+                            <div
+                                class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                <i class="fas fa-check text-purple-600 text-xs"></i>
+                            </div>
+                            <span><span class="font-medium">Browser fingerprint resistance:</span> All Tor Browser users
+                                have identical browser fingerprints</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div
+                                class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                <i class="fas fa-check text-purple-600 text-xs"></i>
+                            </div>
+                            <span><span class="font-medium">Automatic cookie deletion:</span> Cookies and browsing data
+                                are deleted when closing the browser</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div
+                                class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                <i class="fas fa-check text-purple-600 text-xs"></i>
+                            </div>
+                            <span><span class="font-medium">NoScript by default:</span> Blocks JavaScript and
+                                potentially dangerous dynamic content</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 flex items-center">
+                        <i class="fas fa-user-secret text-purple-600 mr-2"></i>
+                        Anonymity
+                    </h3>
+                    <ul class="space-y-3 text-gray-700">
+                        <li class="flex items-start">
+                            <div
+                                class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                <i class="fas fa-check text-purple-600 text-xs"></i>
+                            </div>
+                            <span><span class="font-medium">Hides real IP address:</span> Websites only see the exit
+                                relay's IP address</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div
+                                class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                <i class="fas fa-check text-purple-600 text-xs"></i>
+                            </div>
+                            <span><span class="font-medium">Access .onion sites:</span> Access hidden services only
+                                available on Tor network</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div
+                                class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                <i class="fas fa-check text-purple-600 text-xs"></i>
+                            </div>
+                            <span><span class="font-medium">Anti-tracking:</span> Prevents tracking tools like Google
+                                Analytics</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Limitations -->
+        <div class="card bg-white rounded-xl shadow-sm p-6 mb-8">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+                    <i class="fas fa-exclamation-triangle text-purple-600"></i>
+                </div>
+                <h2 class="text-2xl font-semibold text-gray-900">Tor Limitations</h2>
+            </div>
+
+            <div class="space-y-4 text-gray-700">
+                <p>Although Tor provides a high level of anonymity, it's not a perfect solution and has some
+                    limitations:</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div class="p-4 bg-red-50 rounded-lg border border-red-100">
+                        <div class="flex items-center mb-2">
+                            <div class="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center mr-2">
+                                <i class="fas fa-tachometer-alt text-red-600 text-xs"></i>
+                            </div>
+                            <h3 class="font-semibold">Slow Speed</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Data passing through multiple relays makes browsing slower than
+                            normal</p>
+                    </div>
+                    <div class="p-4 bg-red-50 rounded-lg border border-red-100">
+                        <div class="flex items-center mb-2">
+                            <div class="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center mr-2">
+                                <i class="fas fa-ban text-red-600 text-xs"></i>
+                            </div>
+                            <h3 class="font-semibold">Blocked in Some Places</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Some countries, organizations or public WiFi networks block Tor
+                            connections</p>
+                    </div>
+                    <div class="p-4 bg-red-50 rounded-lg border border-red-100">
+                        <div class="flex items-center mb-2">
+                            <div class="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center mr-2">
+                                <i class="fas fa-exclamation-circle text-red-600 text-xs"></i>
+                            </div>
+                            <h3 class="font-semibold">Not 100% Protection</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">If used incorrectly (like downloading files, enabling plugins)
+                            your identity could still be exposed</p>
+                    </div>
+                    <div class="p-4 bg-red-50 rounded-lg border border-red-100">
+                        <div class="flex items-center mb-2">
+                            <div class="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center mr-2">
+                                <i class="fas fa-eye text-red-600 text-xs"></i>
+                            </div>
+                            <h3 class="font-semibold">Exit Relay Can See Content</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Exit relays can see unencrypted traffic (HTTP), so always use
+                            HTTPS</p>
+                    </div>
+                </div>
+
+                <div class="bg-purple-50 p-4 rounded-lg border border-purple-100 mt-4">
+                    <div class="flex">
+                        <div class="mr-3 text-purple-600">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-700">To enhance security when using Tor: always update the
+                                browser, only access HTTPS sites, don't download files or open documents directly in Tor
+                                Browser.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tor animation -->
+        <div class="flex justify-center items-center pb-4">
+            <a href="tor-works-animation.html" target="_blank"
+                class="inline-block bg-purple-300 text-white font-semibold py-2 px-4 rounded-lg hover:bg-purple-400 transition duration-200">
+                Visit Example
+            </a>
+        </div>
+
+        <!-- Resources -->
+        <div class="card bg-white rounded-xl shadow-sm p-6">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+                    <i class="fas fa-book text-purple-600"></i>
+                </div>
+                <h2 class="text-2xl font-semibold text-gray-900">Learn More</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="https://www.torproject.org/" target="_blank"
+                    class="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-purple-500 transition-colors group">
+                    <div class="flex items-center mb-2">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mr-3 group-hover:bg-purple-200 transition-colors">
+                            <i class="fas fa-globe text-purple-600"></i>
+                        </div>
+                        <h3 class="font-semibold">Tor Project Homepage</h3>
+                    </div>
+                    <p class="text-sm text-gray-600">Official website of the Tor Project</p>
+                </a>
+
+                <a href="https://tb-manual.torproject.org/" target="_blank"
+                    class="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-purple-500 transition-colors group">
+                    <div class="flex items-center mb-2">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mr-3 group-hover:bg-purple-200 transition-colors">
+                            <i class="fas fa-book-open text-purple-600"></i>
+                        </div>
+                        <h3 class="font-semibold">User Manual</h3>
+                    </div>
+                    <p class="text-sm text-gray-600">Complete guide to Tor Browser</p>
+                </a>
+
+                <a href="https://support.torproject.org/" target="_blank"
+                    class="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-purple-500 transition-colors group">
+                    <div class="flex items-center mb-2">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mr-3 group-hover:bg-purple-200 transition-colors">
+                            <i class="fas fa-question-circle text-purple-600"></i>
+                        </div>
+                        <h3 class="font-semibold">Support</h3>
+                    </div>
+                    <p class="text-sm text-gray-600">FAQs and technical support</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Change Tor circuit
+        function changeCircuit() {
+            const relays = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+            const newCircuit = [
+                relays[Math.floor(Math.random() * relays.length)],
+                relays[Math.floor(Math.random() * relays.length)],
+                relays[Math.floor(Math.random() * relays.length)]
+            ].filter((v, i, a) => a.indexOf(v) === i); // Ensure no duplicates
+
+            if (newCircuit.length < 3) {
+                return changeCircuit(); // Try again if duplicates
+            }
+
+            document.getElementById('circuitStatus').textContent = `Current circuit: ${newCircuit.join(' → ')}`;
+
+            // Loading effect
+            const statusElement = document.getElementById('circuitStatus');
+            statusElement.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Creating new circuit...';
+
+            setTimeout(() => {
+                statusElement.textContent = `Current circuit: ${newCircuit.join(' → ')}`;
+            }, 1000);
+        }
+
+        // Path drawing animation
+        document.addEventListener('DOMContentLoaded', function () {
+            const paths = document.querySelectorAll('.onion-path');
+            paths.forEach(path => {
+                const length = path.getTotalLength();
+                path.style.strokeDasharray = length;
+                path.style.strokeDashoffset = length;
+
+                setTimeout(() => {
+                    path.style.transition = 'stroke-dashoffset 3s ease-in-out';
+                    path.style.strokeDashoffset = '0';
+                }, 500);
+            });
+        });
+    </script>
+</body>
+
+</html>

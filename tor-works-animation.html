@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tor Browser Animation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes encrypt {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2) rotate(10deg);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .node {
+            transition: all 0.5s ease;
+        }
+
+        .data-packet {
+            transition: all 0.5s ease;
+            position: absolute;
+        }
+
+        .tor-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 5s linear forwards;
+        }
+
+        .highlight {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.7);
+        }
+
+        .encrypt-animation {
+            animation: encrypt 1s ease-in-out;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .node-icon {
+                width: 10vw;
+                height: 10vw;
+                font-size: 4vw;
+            }
+
+            .node-label {
+                font-size: 2.5vw;
+            }
+
+            .data-packet {
+                font-size: 2.5vw;
+                padding: 0.5vw 1vw;
+            }
+
+            #animation-container {
+                height: 60vw;
+            }
+
+            .encryption-visualization-item {
+                font-size: 2.5vw;
+                padding: 1vw 2vw;
+                margin-bottom: 0.5vw;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .node-icon {
+                width: 8vw;
+                height: 8vw;
+                font-size: 3vw;
+            }
+
+            .node-label {
+                font-size: 2vw;
+            }
+
+            #animation-container {
+                height: 50vw;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .node-icon {
+                width: 4vw;
+                height: 4vw;
+                font-size: 1.5vw;
+            }
+
+            .node-label {
+                font-size: 1vw;
+            }
+
+            #animation-container {
+                height: 30vw;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center p-4 overflow-auto">
+    <div class="max-w-6xl w-full px-2 sm:px-4 md:px-6">
+        <!-- Header Section with Credits + Icons -->
+        <div class="text-center mb-6">
+            <p class="text-sm sm:text-base text-gray-300 flex justify-center items-center gap-3 flex-wrap">
+                Created by
+                <span class="font-semibold text-blue-400">Holy_Dev</span>
+
+                <a href="https://github.com/Gianguyen1234" target="_blank"
+                    class="flex items-center space-x-1 text-gray-200 hover:text-white">
+                    <i class="fab fa-github"></i>
+                    <span>GitHub</span>
+                </a>
+
+                <a href="https://www.youtube.com/@dev-maniac2349" target="_blank"
+                    class="flex items-center space-x-1 text-red-400 hover:text-red-500">
+                    <i class="fab fa-youtube"></i>
+                    <span>YouTube</span>
+                </a>
+            </p>
+        </div>
+
+        <!-- Main Title -->
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 sm:mb-6 md:mb-8 text-blue-400 fade-in">
+            How Tor Browser Works
+        </h1>
+
+        <div class="relative bg-gray-800 rounded-xl p-4 sm:p-6 shadow-2xl border border-gray-700 mb-6 sm:mb-8">
+            <!-- Animation Container -->
+            <div id="animation-container" class="relative w-full">
+                <!-- User -->
+                <div id="user" class="absolute left-0 top-1/2 transform -translate-y-1/2 node fade-in"
+                    style="width: 15%">
+                    <div
+                        class="bg-blue-600 rounded-full node-icon flex items-center justify-center text-white mx-auto pulse">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <p class="text-center mt-1 sm:mt-2 node-label">You</p>
+                </div>
+
+                <!-- Tor Nodes -->
+                <div id="entry-node"
+                    class="absolute left-1/4 top-1/3 transform -translate-x-1/2 -translate-y-1/2 node opacity-0">
+                    <div
+                        class="bg-green-600 rounded-full node-icon flex items-center justify-center text-white mx-auto">
+                        <i class="fas fa-door-open"></i>
+                    </div>
+                    <p class="text-center mt-1 sm:mt-2 node-label">Entry Node</p>
+                </div>
+
+                <div id="middle-node"
+                    class="absolute left-1/2 top-2/3 transform -translate-x-1/2 -translate-y-1/2 node opacity-0">
+                    <div
+                        class="bg-yellow-500 rounded-full node-icon flex items-center justify-center text-white mx-auto">
+                        <i class="fas fa-random"></i>
+                    </div>
+                    <p class="text-center mt-1 sm:mt-2 node-label">Middle Node</p>
+                </div>
+
+                <div id="exit-node"
+                    class="absolute right-1/4 top-1/3 transform translate-x-1/2 -translate-y-1/2 node opacity-0">
+                    <div class="bg-red-600 rounded-full node-icon flex items-center justify-center text-white mx-auto">
+                        <i class="fas fa-door-closed"></i>
+                    </div>
+                    <p class="text-center mt-1 sm:mt-2 node-label">Exit Node</p>
+                </div>
+
+                <!-- Website -->
+                <div id="website" class="absolute right-0 top-1/2 transform -translate-y-1/2 node fade-in"
+                    style="width: 15%">
+                    <div class="bg-purple-600 rounded-lg node-icon flex items-center justify-center text-white mx-auto">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <p class="text-center mt-1 sm:mt-2 node-label">Website</p>
+                </div>
+
+                <!-- Connection Lines (initially hidden) -->
+                <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                    <path id="user-to-entry" class="tor-path hidden stroke-blue-400 stroke-2" fill="none"
+                        d="M15%,50% Q25%,50% 25%,33%" />
+                    <path id="entry-to-middle" class="tor-path hidden stroke-green-400 stroke-2" fill="none"
+                        d="M25%,33% Q50%,50% 50%,66%" />
+                    <path id="middle-to-exit" class="tor-path hidden stroke-yellow-400 stroke-2" fill="none"
+                        d="M50%,66% Q75%,50% 75%,33%" />
+                    <path id="exit-to-website" class="tor-path hidden stroke-red-400 stroke-2" fill="none"
+                        d="M75%,33% Q85%,50% 85%,50%" />
+                </svg>
+
+                <!-- Data Packets -->
+                <div id="data-packet-1"
+                    class="data-packet hidden bg-blue-500 text-white rounded-lg px-2 py-1 text-xs sm:text-sm">
+                    <i class="fas fa-lock mr-1"></i> Data
+                </div>
+
+                <div id="data-packet-2"
+                    class="data-packet hidden bg-green-500 text-white rounded-lg px-2 py-1 text-xs sm:text-sm">
+                    <i class="fas fa-lock mr-1"></i> <i class="fas fa-lock"></i> Data
+                </div>
+
+                <div id="data-packet-3"
+                    class="data-packet hidden bg-yellow-500 text-black rounded-lg px-2 py-1 text-xs sm:text-sm">
+                    <i class="fas fa-lock mr-1"></i> <i class="fas fa-lock"></i> <i class="fas fa-lock"></i> Data
+                </div>
+
+                <div id="data-packet-4"
+                    class="data-packet hidden bg-red-500 text-white rounded-lg px-2 py-1 text-xs sm:text-sm">
+                    Data
+                </div>
+
+                <!-- Encryption Layers Visualization -->
+                <div id="encryption-visualization"
+                    class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden">
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="bg-blue-500 text-white px-3 py-1 sm:px-4 sm:py-2 rounded mb-1 w-24 sm:w-32 text-center encryption-visualization-item">
+                            Your IP
+                        </div>
+                        <div class="bg-green-500 text-white px-3 py-1 sm:px-4 sm:py-2 rounded mb-1 w-28 sm:w-40 text-center encryption-visualization-item"
+                            style="animation-delay: 0.2s">
+                            Entry Node
+                        </div>
+                        <div class="bg-yellow-500 text-black px-3 py-1 sm:px-4 sm:py-2 rounded mb-1 w-32 sm:w-48 text-center encryption-visualization-item"
+                            style="animation-delay: 0.4s">
+                            Middle Node
+                        </div>
+                        <div class="bg-red-500 text-white px-3 py-1 sm:px-4 sm:py-2 rounded w-36 sm:w-56 text-center encryption-visualization-item"
+                            style="animation-delay: 0.6s">
+                            Exit Node
+                        </div>
+                        <div class="text-xs sm:text-sm mt-1 sm:mt-2 text-gray-400">Encryption Layers</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex justify-center mt-4 sm:mt-6 space-x-2 sm:space-x-4">
+                <button id="start-btn"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg transition text-sm sm:text-base">
+                    <i class="fas fa-play mr-1 sm:mr-2"></i> Start
+                </button>
+                <button id="reset-btn"
+                    class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg transition text-sm sm:text-base">
+                    <i class="fas fa-redo mr-1 sm:mr-2"></i> Reset
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-xl p-4 sm:p-6 shadow-2xl border border-gray-700">
+            <h2 class="text-lg sm:text-xl md:text-2xl font-semibold mb-3 sm:mb-4 text-blue-400">Tor Browser Process</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm">
+                <div class="bg-gray-700 p-2 sm:p-3 md:p-4 rounded-lg border-l-4 border-blue-500">
+                    <h3 class="font-medium mb-1 sm:mb-2">1. Entry Node</h3>
+                    <p class="text-gray-300">Knows your IP but not your destination</p>
+                </div>
+                <div class="bg-gray-700 p-2 sm:p-3 md:p-4 rounded-lg border-l-4 border-green-500">
+                    <h3 class="font-medium mb-1 sm:mb-2">2. Encryption</h3>
+                    <p class="text-gray-300">Your data gets multiple layers of encryption</p>
+                </div>
+                <div class="bg-gray-700 p-2 sm:p-3 md:p-4 rounded-lg border-l-4 border-yellow-500">
+                    <h3 class="font-medium mb-1 sm:mb-2">3. Middle Nodes</h3>
+                    <p class="text-gray-300">Only know previous and next node in circuit</p>
+                </div>
+                <div class="bg-gray-700 p-2 sm:p-3 md:p-4 rounded-lg border-l-4 border-red-500">
+                    <h3 class="font-medium mb-1 sm:mb-2">4. Exit Node</h3>
+                    <p class="text-gray-300">Knows destination but not your original IP</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const startBtn = document.getElementById('start-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const animationContainer = document.getElementById('animation-container');
+
+            let animationStep = 0;
+            let animationInterval;
+            let dataAnimationInterval;
+
+            // Calculate positions based on container size
+            function calculatePositions() {
+                const container = document.getElementById('animation-container');
+                const containerWidth = container.offsetWidth;
+                const containerHeight = container.offsetHeight;
+
+                // Update SVG paths
+                const userToEntry = document.getElementById('user-to-entry');
+                const entryToMiddle = document.getElementById('entry-to-middle');
+                const middleToExit = document.getElementById('middle-to-exit');
+                const exitToWebsite = document.getElementById('exit-to-website');
+
+                const userX = containerWidth * 0.15;
+                const userY = containerHeight * 0.5;
+                const entryX = containerWidth * 0.25;
+                const entryY = containerHeight * 0.33;
+                const middleX = containerWidth * 0.5;
+                const middleY = containerHeight * 0.66;
+                const exitX = containerWidth * 0.75;
+                const exitY = containerHeight * 0.33;
+                const websiteX = containerWidth * 0.85;
+                const websiteY = containerHeight * 0.5;
+
+                userToEntry.setAttribute('d', `M${userX},${userY} Q${containerWidth * 0.25},${userY} ${entryX},${entryY}`);
+                entryToMiddle.setAttribute('d', `M${entryX},${entryY} Q${middleX},${userY} ${middleX},${middleY}`);
+                middleToExit.setAttribute('d', `M${middleX},${middleY} Q${exitX},${userY} ${exitX},${exitY}`);
+                exitToWebsite.setAttribute('d', `M${exitX},${exitY} Q${websiteX},${userY} ${websiteX},${websiteY}`);
+            }
+
+            // Initialize positions
+            calculatePositions();
+
+            // Update positions on resize
+            window.addEventListener('resize', function () {
+                calculatePositions();
+                resetAnimation();
+            });
+
+            // Start animation
+            startBtn.addEventListener('click', function () {
+                startBtn.disabled = true;
+                resetBtn.disabled = true;
+                startBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                startBtn.classList.add('bg-blue-900', 'cursor-not-allowed');
+
+                // Reset first
+                resetAnimation();
+
+                // Start step-by-step animation
+                animationStep = 0;
+                animateTorProcess();
+            });
+
+            // Reset animation
+            resetBtn.addEventListener('click', resetAnimation);
+
+            function animateTorProcess() {
+                if (animationStep > 6) {
+                    clearInterval(animationInterval);
+                    startBtn.disabled = false;
+                    resetBtn.disabled = false;
+                    startBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    startBtn.classList.remove('bg-blue-900', 'cursor-not-allowed');
+                    return;
+                }
+
+                switch (animationStep) {
+                    case 0:
+                        // Show entry node
+                        document.getElementById('entry-node').classList.remove('opacity-0');
+                        document.getElementById('entry-node').classList.add('opacity-100');
+                        document.getElementById('user-to-entry').classList.remove('hidden');
+                        break;
+                    case 1:
+                        // Show middle node
+                        document.getElementById('middle-node').classList.remove('opacity-0');
+                        document.getElementById('middle-node').classList.add('opacity-100');
+                        document.getElementById('entry-to-middle').classList.remove('hidden');
+                        break;
+                    case 2:
+                        // Show exit node
+                        document.getElementById('exit-node').classList.remove('opacity-0');
+                        document.getElementById('exit-node').classList.add('opacity-100');
+                        document.getElementById('middle-to-exit').classList.remove('hidden');
+                        break;
+                    case 3:
+                        // Show website connection
+                        document.getElementById('exit-to-website').classList.remove('hidden');
+                        break;
+                    case 4:
+                        // Show encryption visualization
+                        document.getElementById('encryption-visualization').classList.remove('hidden');
+                        const layers = document.querySelectorAll('.encryption-visualization-item');
+                        layers.forEach((layer, index) => {
+                            layer.style.animation = 'encrypt 1s ease-in-out';
+                            layer.style.animationDelay = `${index * 0.2}s`;
+                        });
+                        break;
+                    case 5:
+                        // Animate data packets
+                        animateDataPackets();
+                        break;
+                    case 6:
+                        // Highlight security
+                        document.getElementById('entry-node').classList.add('highlight');
+                        document.getElementById('middle-node').classList.add('highlight');
+                        document.getElementById('exit-node').classList.add('highlight');
+                        break;
+                }
+
+                animationStep++;
+                animationInterval = setTimeout(animateTorProcess, 1500);
+            }
+
+            function animateDataPackets() {
+                clearInterval(dataAnimationInterval);
+
+                const container = document.getElementById('animation-container');
+                const containerWidth = container.offsetWidth;
+                const containerHeight = container.offsetHeight;
+
+                const positions = {
+                    user: {
+                        x: containerWidth * 0.15,
+                        y: containerHeight * 0.5
+                    },
+                    entry: {
+                        x: containerWidth * 0.25,
+                        y: containerHeight * 0.33
+                    },
+                    middle: {
+                        x: containerWidth * 0.5,
+                        y: containerHeight * 0.66
+                    },
+                    exit: {
+                        x: containerWidth * 0.75,
+                        y: containerHeight * 0.33
+                    },
+                    website: {
+                        x: containerWidth * 0.85,
+                        y: containerHeight * 0.5
+                    }
+                };
+
+                const packets = [
+                    {
+                        id: 'data-packet-1',
+                        start: positions.user,
+                        end: positions.entry,
+                        delay: 0,
+                        color: 'blue'
+                    },
+                    {
+                        id: 'data-packet-2',
+                        start: positions.entry,
+                        end: positions.middle,
+                        delay: 500,
+                        color: 'green'
+                    },
+                    {
+                        id: 'data-packet-3',
+                        start: positions.middle,
+                        end: positions.exit,
+                        delay: 1000,
+                        color: 'yellow'
+                    },
+                    {
+                        id: 'data-packet-4',
+                        start: positions.exit,
+                        end: positions.website,
+                        delay: 1500,
+                        color: 'red'
+                    }
+                ];
+
+                function animatePacket(packet) {
+                    const element = document.getElementById(packet.id);
+                    element.classList.remove('hidden');
+                    element.style.left = `${packet.start.x}px`;
+                    element.style.top = `${packet.start.y}px`;
+
+                    // Animate movement
+                    setTimeout(() => {
+                        element.style.left = `${packet.end.x}px`;
+                        element.style.top = `${packet.end.y}px`;
+                    }, 100);
+
+                    // Hide after animation
+                    setTimeout(() => {
+                        element.classList.add('hidden');
+                    }, 1000);
+                }
+
+                packets.forEach(packet => {
+                    setTimeout(() => animatePacket(packet), packet.delay);
+                });
+
+                // Repeat animation
+                dataAnimationInterval = setInterval(() => {
+                    packets.forEach(packet => {
+                        setTimeout(() => animatePacket(packet), packet.delay);
+                    });
+                }, 2500);
+            }
+
+            function resetAnimation() {
+                clearInterval(animationInterval);
+                clearInterval(dataAnimationInterval);
+
+                // Hide all nodes except user and website
+                document.getElementById('entry-node').classList.add('opacity-0');
+                document.getElementById('middle-node').classList.add('opacity-0');
+                document.getElementById('exit-node').classList.add('opacity-0');
+
+                // Hide all paths
+                document.getElementById('user-to-entry').classList.add('hidden');
+                document.getElementById('entry-to-middle').classList.add('hidden');
+                document.getElementById('middle-to-exit').classList.add('hidden');
+                document.getElementById('exit-to-website').classList.add('hidden');
+
+                // Hide data packets
+                document.querySelectorAll('.data-packet').forEach(packet => {
+                    packet.classList.add('hidden');
+                });
+
+                // Hide encryption visualization
+                document.getElementById('encryption-visualization').classList.add('hidden');
+
+                // Remove highlights
+                document.getElementById('entry-node').classList.remove('highlight');
+                document.getElementById('middle-node').classList.remove('highlight');
+                document.getElementById('exit-node').classList.remove('highlight');
+
+                // Reset animation step
+                animationStep = 0;
+
+                // Enable buttons
+                startBtn.disabled = false;
+                resetBtn.disabled = false;
+                startBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                startBtn.classList.remove('bg-blue-900', 'cursor-not-allowed');
+            }
+        });
+    </script>
+</body>
+
+</html>

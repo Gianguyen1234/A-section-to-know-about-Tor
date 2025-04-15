@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiểu Về Tor Browser - Mạng Ẩn Danh</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .onion-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw 3s ease-in-out forwards;
+        }
+
+        @keyframes draw {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .btn-primary {
+            background-color: #7c3aed;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #5b21b6;
+        }
+
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #1f2937;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted #7c3aed;
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <div class="inline-block p-3 bg-purple-100 rounded-full mb-4">
+                <i class="fas fa-mask text-purple-600 text-3xl"></i>
+
+            </div>
+            <h1 class="text-4xl font-bold mb-3 text-gray-900">Hiểu Về Tor Browser</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Hướng dẫn thân thiện về cách hoạt động của trình duyệt ẩn danh Tor
+            </p>
+            <p class="text-md text-gray-700 mt-4">Created by <strong>Holy_Dev</strong></p>
+            <div class="flex justify-center items-center gap-4 mt-2">
+                <a href="https://github.com/Gianguyen1234" target="_blank" class="text-purple-600 hover:underline">
+                    <i class="fab fa-github text-2xl"></i>
+                </a>
+                <a href="https://www.youtube.com/@dev-maniac2349" target="_blank" class="text-red-600 hover:underline">
+                    <i class="fab fa-youtube text-2xl"></i>
+                </a>
+            </div>
+        </header>
+
+        <!-- Introduction -->
+        <div class="card bg-white rounded-xl shadow-sm p-6 mb-8">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+                    <i class="fas fa-info-circle text-purple-600"></i>
+                </div>
+                <h2 class="text-2xl font-semibold text-gray-900">Giới Thiệu Về Tor</h2>
+            </div>
+
+            <div class="space-y-4 text-gray-700">
+                <p>Tor (The Onion Router) là một mạng lưới máy tính phân tán giúp bảo vệ quyền riêng tư và ẩn danh khi
+                    truy cập Internet. Tor Browser là trình duyệt web được thiết kế đặc biệt để kết nối với mạng Tor.
+                </p>
+
+                <p>Tor hoạt động bằng cách định tuyến lưu lượng internet của bạn qua một mạng lưới các máy chủ tình
+                    nguyện (gọi là relay) trên toàn thế giới, giúp che giấu vị trí và hoạt động của bạn khỏi sự giám
+                    sát.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                    <div class="p-4 bg-purple-50 rounded-lg border border-purple-100">
+                        <div class="flex items-center mb-2">
+                            <div class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center mr-2">
+                                <i class="fas fa-user-secret text-purple-600 text-xs"></i>
+                            </div>
+                            <h3 class="font-semibold">Ẩn Danh</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Che giấu danh tính và vị trí thực của bạn khi lướt web</p>
+                    </div>
+                    <div class="p-4 bg-purple-50 rounded-lg border border-purple-100">
+                        <div class="flex items-center mb-2">
+                            <div class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center mr-2">
+                                <i class="fas fa-layer-group text-purple-600 text-xs"></i>
+                            </div>
+                            <h3 class="font-semibold">Định Tuyến Củ Hành</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Mã hóa nhiều lớp như củ hành để bảo vệ dữ liệu</p>
+                    </div>
+                    <div class="p-4 bg-purple-50 rounded-lg border border-purple-100">
+                        <div class="flex items-center mb-2">
+                            <div class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center mr-2">
+                                <i class="fas fa-globe text-purple-600 text-xs"></i>
+                            </div>
+                            <h3 class="font-semibold">Truy Cập Mở</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Vượt qua kiểm duyệt internet để truy cập thông tin tự do</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How Tor Works -->
+        <div class="card bg-white rounded-xl shadow-sm p-6 mb-8">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+                    <i class="fas fa-cogs text-purple-600"></i>
+                </div>
+                <h2 class="text-2xl font-semibold text-gray-900">Cách Tor Hoạt Động</h2>
+            </div>
+
+            <div class="space-y-8">
+                <!-- Onion Routing -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 flex items-center">
+                        <span
+                            class="w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center mr-2 text-sm">1</span>
+                        Định Tuyến Củ Hành
+                    </h3>
+                    <p class="mb-4 text-gray-700">Tor sử dụng kỹ thuật "định tuyến củ hành" - dữ liệu được mã hóa nhiều
+                        lớp và chuyển tiếp qua ít nhất 3 relay ngẫu nhiên trước khi đến đích.</p>
+
+                    <div class="bg-purple-50 p-4 rounded-lg border border-purple-100 mb-6">
+                        <svg viewBox="0 0 800 300" class="w-full">
+                            <!-- Client -->
+                            <circle cx="100" cy="150" r="40" fill="#8b5cf6" />
+                            <text x="100" y="150" text-anchor="middle" fill="white" font-weight="bold"
+                                dy=".3em">Bạn</text>
+
+                            <!-- Relays -->
+                            <circle cx="250" cy="100" r="30" fill="#7c3aed" />
+                            <text x="250" y="100" text-anchor="middle" fill="white" font-weight="bold"
+                                dy=".3em">Guard</text>
+
+                            <circle cx="400" cy="150" r="30" fill="#6d28d9" />
+                            <text x="400" y="150" text-anchor="middle" fill="white" font-weight="bold"
+                                dy=".3em">Middle</text>
+
+                            <circle cx="550" cy="200" r="30" fill="#5b21b6" />
+                            <text x="550" y="200" text-anchor="middle" fill="white" font-weight="bold"
+                                dy=".3em">Exit</text>
+
+                            <!-- Destination -->
+                            <circle cx="700" cy="150" r="40" fill="#4c1d95" />
+                            <text x="700" y="150" text-anchor="middle" fill="white" font-weight="bold"
+                                dy=".3em">Website</text>
+
+                            <!-- Path -->
+                            <path class="onion-path" d="M100,150 L250,100 L400,150 L550,200 L700,150" stroke="#7c3aed"
+                                stroke-width="3" fill="none" />
+                        </svg>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-3 bg-white rounded-lg border border-gray-200">
+                            <h4 class="font-semibold mb-2 flex items-center">
+                                <i class="fas fa-shield-alt text-purple-600 mr-2"></i>
+                                Relay Guard
+                            </h4>
+                            <p class="text-sm text-gray-600">Điểm vào mạng Tor, biết địa chỉ IP thực của bạn nhưng không
+                                biết bạn đang truy cập gì</p>
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-gray-200">
+                            <h4 class="font-semibold mb-2 flex items-center">
+                                <i class="fas fa-random text-purple-600 mr-2"></i>
+                                Relay Middle
+                            </h4>
+                            <p class="text-sm text-gray-600">Relay trung gian, không biết IP thực cũng như đích đến cuối
+                                cùng</p>
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-gray-200">
+                            <h4 class="font-semibold mb-2 flex items-center">
+                                <i class="fas fa-door-open text-purple-600 mr-2"></i>
+                                Relay Exit
+                            </h4>
+                            <p class="text-sm text-gray-600">Điểm ra khỏi mạng Tor, biết đích đến nhưng không biết IP
+                                thực của bạn</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Encryption -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3 flex items-center">
+                            <span
+                                class="w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center mr-2 text-sm">2</span>
+                            Mã Hóa Nhiều Lớp
+                        </h3>
+                        <p class="mb-4 text-gray-700">Tor sử dụng mã hóa nhiều lớp (giống như củ hành) để bảo vệ dữ
+                            liệu:</p>
+
+                        <div class="p-4 bg-purple-50 rounded-lg border border-purple-100 mb-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="text-center">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-1">
+                                        <i class="fas fa-lock text-purple-600"></i>
+                                    </div>
+                                    <span class="text-xs">Lớp 1</span>
+                                </div>
+                                <i class="fas fa-arrow-right text-gray-400"></i>
+                                <div class="text-center">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-purple-200 flex items-center justify-center mx-auto mb-1">
+                                        <i class="fas fa-lock text-purple-600"></i>
+                                    </div>
+                                    <span class="text-xs">Lớp 2</span>
+                                </div>
+                                <i class="fas fa-arrow-right text-gray-400"></i>
+                                <div class="text-center">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-purple-300 flex items-center justify-center mx-auto mb-1">
+                                        <i class="fas fa-lock text-purple-600"></i>
+                                    </div>
+                                    <span class="text-xs">Lớp 3</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600">Mỗi relay chỉ giải mã một lớp để biết relay tiếp theo,
+                                không thể xem toàn bộ đường đi</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3 flex items-center">
+                            <span
+                                class="w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center mr-2 text-sm">3</span>
+                            Mạng Tor
+                        </h3>
+                        <p class="mb-4 text-gray-700">Mạng Tor bao gồm hàng nghìn relay tình nguyện trên khắp thế giới:
+                        </p>
+
+                        <div class="p-4 bg-purple-50 rounded-lg border border-purple-100">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-server text-purple-600 mr-2"></i>
+                                <h4 class="font-semibold">Các Loại Relay</h4>
+                            </div>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-start">
+                                    <div
+                                        class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                        <i class="fas fa-shield-alt text-purple-600 text-xs"></i>
+                                    </div>
+                                    <span><span class="font-medium">Guard Relay:</span> Điểm vào mạng Tor (cần độ tin
+                                        cậy cao)</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <div
+                                        class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                        <i class="fas fa-random text-purple-600 text-xs"></i>
+                                    </div>
+                                    <span><span class="font-medium">Middle Relay:</span> Chuyển tiếp lưu lượng (phổ biến
+                                        nhất)</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <div
+                                        class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                        <i class="fas fa-door-open text-purple-600 text-xs"></i>
+                                    </div>
+                                    <span><span class="font-medium">Exit Relay:</span> Điểm ra (cần chấp nhận rủi ro
+                                        pháp lý)</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Circuit -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 flex items-center">
+                        <span
+                            class="w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center mr-2 text-sm">4</span>
+                        Mạch Tor
+                    </h3>
+                    <p class="mb-4 text-gray-700">Mỗi phiên duyệt web tạo một mạch (circuit) mới gồm 3 relay ngẫu nhiên.
+                        Mạch này thay đổi sau 10 phút hoặc khi mở tab mới.</p>
+
+                    <div class="bg-white p-4 rounded-lg border border-gray-200 mb-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="text-center">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-1">
+                                    <i class="fas fa-user text-purple-600"></i>
+                                </div>
+                                <span class="text-xs">Bạn</span>
+                            </div>
+                            <i class="fas fa-arrow-right text-gray-400"></i>
+                            <div class="text-center">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-purple-200 flex items-center justify-center mx-auto mb-1">
+                                    <span class="text-purple-600 font-bold">A</span>
+                                </div>
+                                <span class="text-xs">Relay A</span>
+                            </div>
+                            <i class="fas fa-arrow-right text-gray-400"></i>
+                            <div class="text-center">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-purple-300 flex items-center justify-center mx-auto mb-1">
+                                    <span class="text-purple-600 font-bold">B</span>
+                                </div>
+                                <span class="text-xs">Relay B</span>
+                            </div>
+                            <i class="fas fa-arrow-right text-gray-400"></i>
+                            <div class="text-center">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-purple-400 flex items-center justify-center mx-auto mb-1">
+                                    <span class="text-purple-600 font-bold">C</span>
+                                </div>
+                                <span class="text-xs">Relay C</span>
+                            </div>
+                            <i class="fas fa-arrow-right text-gray-400"></i>
+                            <div class="text-center">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center mx-auto mb-1">
+                                    <i class="fas fa-globe text-white"></i>
+                                </div>
+                                <span class="text-xs">Website</span>
+                            </div>
+                        </div>
+                        <button onclick="changeCircuit()"
+                            class="btn-primary py-2 px-4 rounded-lg transition-colors w-full">
+                            <i class="fas fa-sync-alt mr-2"></i>Thay Đổi Mạch
+                        </button>
+                        <div class="mt-2 text-sm text-center" id="circuitStatus">Mạch hiện tại: A → B → C</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tor Browser Features -->
+        <div class="card bg-white rounded-xl shadow-sm p-6 mb-8">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+                    <i class="fas fa-star text-purple-600"></i>
+                </div>
+                <h2 class="text-2xl font-semibold text-gray-900">Tính Năng Tor Browser</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 flex items-center">
+                        <i class="fas fa-shield-alt text-purple-600 mr-2"></i>
+                        Bảo Mật Nâng Cao
+                    </h3>
+                    <ul class="space-y-3 text-gray-700">
+                        <li class="flex items-start">
+                            <div
+                                class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                <i class="fas fa-check text-purple-600 text-xs"></i>
+                            </div>
+                            <span><span class="font-medium">Chống vân tay trình duyệt:</span> Tất cả người dùng Tor
+                                Browser có vân tay trình duyệt giống nhau</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div
+                                class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                <i class="fas fa-check text-purple-600 text-xs"></i>
+                            </div>
+                            <span><span class="font-medium">Tự động xóa cookie:</span> Cookie và dữ liệu duyệt web bị
+                                xóa khi đóng trình duyệt</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div
+                                class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                <i class="fas fa-check text-purple-600 text-xs"></i>
+                            </div>
+                            <span><span class="font-medium">NoScript mặc định:</span> Chặn JavaScript và các nội dung
+                                động có thể nguy hiểm</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-3 flex items-center">
+                        <i class="fas fa-user-secret text-purple-600 mr-2"></i>
+                        Ẩn Danh
+                    </h3>
+                    <ul class="space-y-3 text-gray-700">
+                        <li class="flex items-start">
+                            <div
+                                class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                <i class="fas fa-check text-purple-600 text-xs"></i>
+                            </div>
+                            <span><span class="font-medium">Ẩn địa chỉ IP thực:</span> Website chỉ thấy địa chỉ IP của
+                                relay exit</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div
+                                class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                <i class="fas fa-check text-purple-600 text-xs"></i>
+                            </div>
+                            <span><span class="font-medium">Truy cập .onion:</span> Truy cập các dịch vụ ẩn chỉ có trên
+                                mạng Tor</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div
+                                class="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                <i class="fas fa-check text-purple-600 text-xs"></i>
+                            </div>
+                            <span><span class="font-medium">Chống theo dõi:</span> Ngăn các công cụ theo dõi như Google
+                                Analytics</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Limitations -->
+        <div class="card bg-white rounded-xl shadow-sm p-6 mb-8">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+                    <i class="fas fa-exclamation-triangle text-purple-600"></i>
+                </div>
+                <h2 class="text-2xl font-semibold text-gray-900">Hạn Chế Của Tor</h2>
+            </div>
+
+            <div class="space-y-4 text-gray-700">
+                <p>Mặc dù Tor cung cấp mức độ ẩn danh cao, nhưng nó không phải là giải pháp hoàn hảo và có một số hạn
+                    chế:</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div class="p-4 bg-red-50 rounded-lg border border-red-100">
+                        <div class="flex items-center mb-2">
+                            <div class="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center mr-2">
+                                <i class="fas fa-tachometer-alt text-red-600 text-xs"></i>
+                            </div>
+                            <h3 class="font-semibold">Tốc Độ Chậm</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Dữ liệu đi qua nhiều relay khiến tốc độ duyệt web chậm hơn bình
+                            thường</p>
+                    </div>
+                    <div class="p-4 bg-red-50 rounded-lg border border-red-100">
+                        <div class="flex items-center mb-2">
+                            <div class="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center mr-2">
+                                <i class="fas fa-ban text-red-600 text-xs"></i>
+                            </div>
+                            <h3 class="font-semibold">Bị Chặn Ở Một Số Nơi</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Một số quốc gia, tổ chức hoặc mạng WiFi công cộng chặn kết nối
+                            Tor</p>
+                    </div>
+                    <div class="p-4 bg-red-50 rounded-lg border border-red-100">
+                        <div class="flex items-center mb-2">
+                            <div class="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center mr-2">
+                                <i class="fas fa-exclamation-circle text-red-600 text-xs"></i>
+                            </div>
+                            <h3 class="font-semibold">Không Bảo Vệ 100%</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Nếu sử dụng không đúng cách (như tải file, bật plugin) vẫn có
+                            thể bị lộ danh tính</p>
+                    </div>
+                    <div class="p-4 bg-red-50 rounded-lg border border-red-100">
+                        <div class="flex items-center mb-2">
+                            <div class="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center mr-2">
+                                <i class="fas fa-eye text-red-600 text-xs"></i>
+                            </div>
+                            <h3 class="font-semibold">Exit Relay Có Thể Xem Nội Dung</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Relay exit có thể xem lưu lượng không mã hóa (HTTP), nên luôn
+                            dùng HTTPS</p>
+                    </div>
+                </div>
+
+                <div class="bg-purple-50 p-4 rounded-lg border border-purple-100 mt-4">
+                    <div class="flex">
+                        <div class="mr-3 text-purple-600">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-700">Để tăng cường bảo mật khi dùng Tor: luôn cập nhật trình
+                                duyệt, chỉ truy cập HTTPS, không tải file hoặc mở tài liệu trực tiếp trong Tor Browser.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tor animation -->
+        <div class="flex justify-center items-center pb-4">
+            <a href="tor-works-animation.html" target="_blank"
+               class="inline-block bg-purple-300 text-white font-semibold py-2 px-4 rounded-lg hover:bg-purple-400 transition duration-200">
+              Visit Example
+            </a>
+          </div>
+          
+        <!-- Resources -->
+        <div class="card bg-white rounded-xl shadow-sm p-6">
+            <div class="flex items-center mb-4">
+                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+                    <i class="fas fa-book text-purple-600"></i>
+                </div>
+                <h2 class="text-2xl font-semibold text-gray-900">Tìm Hiểu Thêm</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="https://www.torproject.org/" target="_blank"
+                    class="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-purple-500 transition-colors group">
+                    <div class="flex items-center mb-2">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mr-3 group-hover:bg-purple-200 transition-colors">
+                            <i class="fas fa-globe text-purple-600"></i>
+                        </div>
+                        <h3 class="font-semibold">Trang Chủ Tor</h3>
+                    </div>
+                    <p class="text-sm text-gray-600">Trang web chính thức của dự án Tor</p>
+                </a>
+
+                <a href="https://tb-manual.torproject.org/" target="_blank"
+                    class="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-purple-500 transition-colors group">
+                    <div class="flex items-center mb-2">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mr-3 group-hover:bg-purple-200 transition-colors">
+                            <i class="fas fa-book-open text-purple-600"></i>
+                        </div>
+                        <h3 class="font-semibold">Hướng Dẫn Sử Dụng</h3>
+                    </div>
+                    <p class="text-sm text-gray-600">Hướng dẫn đầy đủ về Tor Browser</p>
+                </a>
+
+                <a href="https://support.torproject.org/" target="_blank"
+                    class="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-purple-500 transition-colors group">
+                    <div class="flex items-center mb-2">
+                        <div
+                            class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mr-3 group-hover:bg-purple-200 transition-colors">
+                            <i class="fas fa-question-circle text-purple-600"></i>
+                        </div>
+                        <h3 class="font-semibold">Hỗ Trợ</h3>
+                    </div>
+                    <p class="text-sm text-gray-600">Câu hỏi thường gặp và hỗ trợ kỹ thuật</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Thay đổi mạch Tor
+        function changeCircuit() {
+            const relays = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+            const newCircuit = [
+                relays[Math.floor(Math.random() * relays.length)],
+                relays[Math.floor(Math.random() * relays.length)],
+                relays[Math.floor(Math.random() * relays.length)]
+            ].filter((v, i, a) => a.indexOf(v) === i); // Đảm bảo không trùng lặp
+
+            if (newCircuit.length < 3) {
+                return changeCircuit(); // Thử lại nếu bị trùng
+            }
+
+            document.getElementById('circuitStatus').textContent = `Mạch hiện tại: ${newCircuit.join(' → ')}`;
+
+            // Hiệu ứng loading
+            const statusElement = document.getElementById('circuitStatus');
+            statusElement.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Đang tạo mạch mới...';
+
+            setTimeout(() => {
+                statusElement.textContent = `Mạch hiện tại: ${newCircuit.join(' → ')}`;
+            }, 1000);
+        }
+
+        // Hiệu ứng vẽ đường đi
+        document.addEventListener('DOMContentLoaded', function () {
+            const paths = document.querySelectorAll('.onion-path');
+            paths.forEach(path => {
+                const length = path.getTotalLength();
+                path.style.strokeDasharray = length;
+                path.style.strokeDashoffset = length;
+
+                setTimeout(() => {
+                    path.style.transition = 'stroke-dashoffset 3s ease-in-out';
+                    path.style.strokeDashoffset = '0';
+                }, 500);
+            });
+        });
+    </script>
+</body>
+
+</html>
