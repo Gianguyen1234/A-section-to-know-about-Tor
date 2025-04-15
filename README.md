@@ -19,8 +19,3 @@ A friendly, interactive guide explaining how the Tor Browser works with visualiz
 - **Icons**: [Font Awesome](https://fontawesome.com/)
 - **Fonts**: [Google Fonts (Inter)](https://fonts.google.com/specimen/Inter)
 
-## How to Use
-
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/yourusername/tor-browser-guide.git
