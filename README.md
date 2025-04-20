@@ -20,3 +20,5 @@ A friendly, interactive guide explaining how the Tor Browser works with visualiz
 - **Icons**: [Font Awesome](https://fontawesome.com/)
 - **Fonts**: [Google Fonts (Inter)](https://fonts.google.com/specimen/Inter)
 
+## Next Section:
+- [Tor-vs-VPN-comparison](https://github.com/Gianguyen1234/Tor-vs-VPN-comparison)
